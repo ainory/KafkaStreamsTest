@@ -1,6 +1,6 @@
 ### KafkaStreamsTest
 
-* TODO
+* flow
   * collectd(kafka plugin) -> kafka -> kafka streams(min/max/avg/sum) -> other topic
   
 * kafka stream version
