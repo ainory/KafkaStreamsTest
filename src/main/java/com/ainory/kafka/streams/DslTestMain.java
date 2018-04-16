@@ -539,7 +539,7 @@ public class DslTestMain {
 
         try {
             Properties config = new Properties();
-            config.put(StreamsConfig.APPLICATION_ID_CONFIG, "sum-dsl-application-ainory56");
+            config.put(StreamsConfig.APPLICATION_ID_CONFIG, "sum-dsl-application-ainory57");
             config.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "spanal-app:9092,spanal-1:9092,spanal-2:9092,spanal-3:9092");
             config.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 //            config.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
@@ -593,24 +593,24 @@ public class DslTestMain {
                         }
                     })
                     .toStream().map(new KeyValueMapper<Windowed<String>, DslHostMetricVO, KeyValue<String, String>>() {
-                @Override
-                public KeyValue<String, String> apply(Windowed<String> stringWindowed, DslHostMetricVO valueVO) {
+                        @Override
+                        public KeyValue<String, String> apply(Windowed<String> stringWindowed, DslHostMetricVO valueVO) {
 
-                                            /*StringBuffer key = new StringBuffer();
-                                            key.append("[").append(DateFormatUtils.format(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss")).append("]").append("[").append(DateFormatUtils.format(stringWindowed.window().start(), "yyyy-MM-dd HH:mm:ss")).append(" ~ ").append(DateFormatUtils.format(stringWindowed.window().end(), "yyyy-MM-dd HH:mm:ss")).append("] ").append(stringWindowed.key());
-                                            KeyValue<String, String> resultValue = new KeyValue<>(key.toString(), aLong);
-                                            System.out.println(key.toString() + " : " + resultValue.value);*/
+                                                    /*StringBuffer key = new StringBuffer();
+                                                    key.append("[").append(DateFormatUtils.format(System.currentTimeMillis(), "yyyy-MM-dd HH:mm:ss")).append("]").append("[").append(DateFormatUtils.format(stringWindowed.window().start(), "yyyy-MM-dd HH:mm:ss")).append(" ~ ").append(DateFormatUtils.format(stringWindowed.window().end(), "yyyy-MM-dd HH:mm:ss")).append("] ").append(stringWindowed.key());
+                                                    KeyValue<String, String> resultValue = new KeyValue<>(key.toString(), aLong);
+                                                    System.out.println(key.toString() + " : " + resultValue.value);*/
 
-                    valueVO.setStartTimestamp(stringWindowed.window().start());
-                    valueVO.setEndTimestamp(stringWindowed.window().end());
+                            valueVO.setStartTimestamp(stringWindowed.window().start());
+                            valueVO.setEndTimestamp(stringWindowed.window().end());
 
-                    KeyValue<String, String> resultMapper = new KeyValue<>(stringWindowed.key(), valueVO.toSimpleString());
+                            KeyValue<String, String> resultMapper = new KeyValue<>(stringWindowed.key(), valueVO.toSimpleString());
 
-                    System.out.println(stringWindowed.key() + " => " + valueVO.toSimpleString());
+                            System.out.println(stringWindowed.key() + " => " + valueVO.toSimpleString());
 
-                    return resultMapper;
-                }
-            })
+                            return resultMapper;
+                        }
+                    })
                     .to("ainory_kafka_summary", Produced.with(Serdes.String(), Serdes.String()));
 
             KafkaStreams streams = new KafkaStreams(builder.build(), config);
