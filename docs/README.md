@@ -1,155 +1,155 @@
-# Kafka Streams Test - Documentation Index
+# Kafka Streams 테스트 - 문서 색인
 
-Welcome to the comprehensive documentation for the Kafka Streams Test project. This directory contains detailed documentation covering all aspects of the project.
+Kafka Streams 테스트 프로젝트의 포괄적인 문서에 오신 것을 환영합니다. 이 디렉토리는 프로젝트의 모든 측면을 다루는 상세한 문서를 포함하고 있습니다.
 
-## 📚 Documentation Overview
+## 📚 문서 개요
 
-This documentation set provides complete coverage of the Kafka Streams Test project, from getting started to advanced usage patterns and API references.
+이 문서 세트는 시작하기부터 고급 사용 패턴 및 API 참조까지 Kafka Streams 테스트 프로젝트의 완전한 내용을 제공합니다.
 
-## 📁 Documentation Structure
+## 📁 문서 구조
 
-### 🚀 Getting Started
-- **[Main README](../README.md)** - Project overview, quick start, and general information
-- **[Usage Guide](USAGE_GUIDE.md)** - Comprehensive setup, configuration, and usage instructions
+### 🚀 시작하기
+- **[메인 README](../README.md)** - 프로젝트 개요, 빠른 시작 및 일반 정보
+- **[사용 가이드](USAGE_GUIDE.md)** - 포괄적인 설정, 구성 및 사용 지침
 
-### 📖 Technical Reference
-- **[API Documentation](API_DOCUMENTATION.md)** - Complete API reference with examples for all public classes and methods
+### 📖 기술 참조
+- **[API 문서](API_DOCUMENTATION.md)** - 모든 public 클래스와 메서드에 대한 예제가 포함된 완전한 API 참조
 
-### 🏗 Architecture Documents
-- **Project Structure** - Detailed in the main README
-- **Data Flow Diagrams** - Included in API documentation
-- **Configuration Reference** - Available in both README and Usage Guide
+### 🏗 아키텍처 문서
+- **프로젝트 구조** - 메인 README에 상세히 설명
+- **데이터 흐름 다이어그램** - API 문서에 포함
+- **설정 참조** - README 및 사용 가이드 모두에서 사용 가능
 
-## 🎯 Documentation Navigation Guide
+## 🎯 문서 탐색 가이드
 
-### For New Users
-1. Start with the **[Main README](../README.md)** for project overview
-2. Follow the **Quick Start** section for immediate setup
-3. Review **[Usage Guide](USAGE_GUIDE.md)** for detailed configuration
+### 새로운 사용자를 위해
+1. 프로젝트 개요를 위해 **[메인 README](../README.md)**로 시작
+2. 즉시 설정을 위해 **빠른 시작** 섹션 따라하기
+3. 상세한 구성을 위해 **[사용 가이드](USAGE_GUIDE.md)** 검토
 
-### For Developers
-1. Review **[API Documentation](API_DOCUMENTATION.md)** for complete technical reference
-2. Check **Project Structure** in main README for codebase organization
-3. Use **[Usage Guide](USAGE_GUIDE.md)** for development and debugging tips
+### 개발자를 위해
+1. 완전한 기술 참조를 위해 **[API 문서](API_DOCUMENTATION.md)** 검토
+2. 코드베이스 구성을 위해 메인 README의 **프로젝트 구조** 확인
+3. 개발 및 디버깅 팁을 위해 **[사용 가이드](USAGE_GUIDE.md)** 사용
 
-### For Operations/DevOps
-1. Focus on **Configuration** sections in Usage Guide
-2. Review **Performance Tuning** in Usage Guide
-3. Check **Monitoring & Troubleshooting** sections
+### 운영/DevOps를 위해
+1. 사용 가이드의 **설정** 섹션에 집중
+2. 사용 가이드의 **성능 튜닝** 검토
+3. **모니터링 및 문제 해결** 섹션 확인
 
-## 📋 Documentation Contents Summary
+## 📋 문서 내용 요약
 
-### [Main README.md](../README.md)
-- **Project Overview** - What the project does and why
-- **Architecture** - High-level system design and data flow
-- **Quick Start** - Fastest way to get up and running
-- **Features** - Core capabilities and supported metrics
-- **Examples** - Common use cases and sample data
-- **Performance** - Benchmarks and optimization tips
-- **Development** - Building, testing, and contributing
+### [메인 README.md](../README.md)
+- **프로젝트 개요** - 프로젝트가 하는 일과 이유
+- **아키텍처** - 고수준 시스템 설계 및 데이터 흐름
+- **빠른 시작** - 시작하고 실행하는 가장 빠른 방법
+- **기능** - 핵심 기능 및 지원 메트릭
+- **예제** - 일반적인 사용 사례 및 샘플 데이터
+- **성능** - 벤치마크 및 최적화 팁
+- **개발** - 빌드, 테스트 및 기여
 
 ### [API_DOCUMENTATION.md](API_DOCUMENTATION.md)
-- **Main Entry Points** - DslTestMain, ProcessorApiTestMain, KafkaTest
-- **Entity Classes** - CollectdKafkaVO, HostMetricVO, DslHostMetricVO
-- **Serialization Components** - CustomSerdes and individual serializers
-- **Stream Processors** - ProcessTest1, ProcessorSupplierTest
-- **Utility Classes** - JsonUtil, timestamp extractors, mappers
-- **Configuration Reference** - All configuration options with examples
-- **Error Handling** - Common patterns and best practices
+- **메인 진입점** - DslTestMain, ProcessorApiTestMain, KafkaTest
+- **엔티티 클래스** - CollectdKafkaVO, HostMetricVO, DslHostMetricVO
+- **직렬화 컴포넌트** - CustomSerdes 및 개별 직렬화기
+- **스트림 프로세서** - ProcessTest1, ProcessorSupplierTest
+- **유틸리티 클래스** - JsonUtil, 타임스탬프 추출기, 매퍼
+- **설정 참조** - 예제와 함께 모든 설정 옵션
+- **오류 처리** - 일반적인 패턴 및 모범 사례
 
 ### [USAGE_GUIDE.md](USAGE_GUIDE.md)
-- **Prerequisites** - System requirements and dependencies
-- **Installation & Setup** - Step-by-step installation instructions
-- **Configuration** - Detailed configuration options and examples
-- **DSL-Based Processing** - High-level stream processing patterns
-- **Processor API Usage** - Low-level processing control
-- **Data Formats** - Input/output formats with examples
-- **Monitoring & Troubleshooting** - Operational guidance
-- **Performance Tuning** - Optimization techniques and benchmarks
+- **전제 조건** - 시스템 요구사항 및 종속성
+- **설치 및 설정** - 단계별 설치 지침
+- **설정** - 상세한 설정 옵션 및 예제
+- **DSL 기반 처리** - 고수준 스트림 처리 패턴
+- **Processor API 사용** - 저수준 처리 제어
+- **데이터 형식** - 예제가 포함된 입력/출력 형식
+- **모니터링 및 문제 해결** - 운영 가이드
+- **성능 튜닝** - 최적화 기법 및 벤치마크
 
-## 🔍 Finding Specific Information
+## 🔍 특정 정보 찾기
 
-### Common Questions and Where to Find Answers
+### 일반적인 질문과 답을 찾을 수 있는 위치
 
-| Question | Documentation Location |
+| 질문 | 문서 위치 |
 |----------|----------------------|
-| How do I get started quickly? | [Main README](../README.md) - Quick Start |
-| How do I configure Kafka brokers? | [Usage Guide](USAGE_GUIDE.md) - Configuration |
-| What's the input data format? | [API Documentation](API_DOCUMENTATION.md) - Entity Classes |
-| How do I troubleshoot errors? | [Usage Guide](USAGE_GUIDE.md) - Troubleshooting |
-| What are all the API methods? | [API Documentation](API_DOCUMENTATION.md) |
-| How do I tune performance? | [Usage Guide](USAGE_GUIDE.md) - Performance Tuning |
-| What's the project structure? | [Main README](../README.md) - Project Structure |
-| How do I set up development? | [Main README](../README.md) - Development |
+| 빠르게 시작하려면 어떻게 해야 하나요? | [메인 README](../README.md) - 빠른 시작 |
+| Kafka 브로커를 어떻게 설정하나요? | [사용 가이드](USAGE_GUIDE.md) - 설정 |
+| 입력 데이터 형식은 무엇인가요? | [API 문서](API_DOCUMENTATION.md) - 엔티티 클래스 |
+| 오류를 어떻게 문제 해결하나요? | [사용 가이드](USAGE_GUIDE.md) - 문제 해결 |
+| 모든 API 메서드는 무엇인가요? | [API 문서](API_DOCUMENTATION.md) |
+| 성능을 어떻게 튜닝하나요? | [사용 가이드](USAGE_GUIDE.md) - 성능 튜닝 |
+| 프로젝트 구조는 무엇인가요? | [메인 README](../README.md) - 프로젝트 구조 |
+| 개발 환경을 어떻게 설정하나요? | [메인 README](../README.md) - 개발 |
 
-### Search Tips
+### 검색 팁
 
-1. **Use Ctrl+F (Cmd+F)** to search within documents
-2. **Check Table of Contents** at the top of each document
-3. **Follow cross-references** between documents
-4. **Review examples** for practical usage patterns
+1. 문서 내 검색을 위해 **Ctrl+F (Cmd+F)** 사용
+2. 각 문서 상단의 **목차 확인**
+3. 문서 간 **상호 참조 링크 따라가기**
+4. 실제 사용 패턴을 위해 **예제 검토**
 
-## 📊 Documentation Metrics
+## 📊 문서 메트릭
 
-### Coverage
-- **✅ All Public APIs** - Fully documented with examples
-- **✅ All Entity Classes** - Complete field descriptions and usage
-- **✅ All Utility Classes** - Method signatures and examples
-- **✅ Configuration Options** - All parameters with descriptions
-- **✅ Error Scenarios** - Common issues and solutions
-- **✅ Performance Guidance** - Tuning and optimization
-- **✅ Operational Procedures** - Setup, monitoring, troubleshooting
+### 범위
+- **✅ 모든 Public API** - 예제와 함께 완전히 문서화
+- **✅ 모든 엔티티 클래스** - 완전한 필드 설명 및 사용법
+- **✅ 모든 유틸리티 클래스** - 메서드 시그니처 및 예제
+- **✅ 설정 옵션** - 설명과 함께 모든 매개변수
+- **✅ 오류 시나리오** - 일반적인 문제 및 해결책
+- **✅ 성능 가이드** - 튜닝 및 최적화
+- **✅ 운영 절차** - 설정, 모니터링, 문제 해결
 
-### Documentation Quality
-- **Code Examples** - Working examples for all major features
-- **Cross-References** - Links between related concepts
-- **Error Handling** - Comprehensive error scenarios
-- **Best Practices** - Recommended patterns and approaches
-- **Real-World Usage** - Practical examples and use cases
+### 문서 품질
+- **코드 예제** - 모든 주요 기능에 대한 작동하는 예제
+- **상호 참조** - 관련 개념 간 링크
+- **오류 처리** - 포괄적인 오류 시나리오
+- **모범 사례** - 권장 패턴 및 접근 방식
+- **실제 사용** - 실용적인 예제 및 사용 사례
 
-## 🔧 Maintenance Information
+## 🔧 유지 관리 정보
 
-### Last Updated
-All documentation was comprehensively updated to reflect the current state of the project (Version 1.0-SNAPSHOT).
+### 마지막 업데이트
+모든 문서는 프로젝트의 현재 상태(버전 1.0-SNAPSHOT)를 반영하도록 포괄적으로 업데이트되었습니다.
 
-### Version Compatibility
+### 버전 호환성
 - **Kafka Streams:** 1.0.0
 - **Kafka Clients:** 1.0.0
 - **Java:** 8+
 - **Maven:** 3.6+
 
-### Documentation Standards
-- **Markdown Format** - All documentation uses GitHub-flavored Markdown
-- **Code Blocks** - All code examples are syntax-highlighted
-- **Cross-Platform** - Instructions work on Linux, macOS, and Windows
-- **Example-Driven** - Every API includes working examples
-- **Troubleshooting** - Common issues and solutions included
+### 문서 표준
+- **마크다운 형식** - 모든 문서는 GitHub 호환 마크다운 사용
+- **코드 블록** - 모든 코드 예제는 구문 강조 표시
+- **크로스 플랫폼** - Linux, macOS, Windows에서 작동하는 지침
+- **예제 중심** - 모든 API에 작동하는 예제 포함
+- **문제 해결** - 일반적인 문제 및 해결책 포함
 
-## 🤝 Contributing to Documentation
+## 🤝 문서 기여
 
-If you find any issues with the documentation or would like to contribute improvements:
+문서에서 문제를 발견하거나 개선사항을 기여하고 싶으시면:
 
-1. **Check existing documentation** to ensure your addition is needed
-2. **Follow the established format** and style conventions
-3. **Include working examples** for any new features or APIs
-4. **Test all code examples** to ensure they work correctly
-5. **Update cross-references** if adding new sections
+1. **기존 문서 확인** - 추가하려는 내용이 필요한지 확인
+2. **확립된 형식과 스타일 규칙 따르기**
+3. **새로운 기능이나 API에 대한 작동하는 예제 포함**
+4. **모든 코드 예제가 올바르게 작동하는지 테스트**
+5. **새 섹션을 추가할 때 상호 참조 업데이트**
 
-### Documentation Style Guide
-- Use **clear, descriptive headings**
-- Include **working code examples**
-- Add **parameter descriptions** for all methods
-- Provide **error handling examples**
-- Include **performance considerations** where relevant
+### 문서 스타일 가이드
+- **명확하고 설명적인 제목** 사용
+- **작동하는 코드 예제** 포함
+- 모든 메서드에 대한 **매개변수 설명** 추가
+- **오류 처리 예제** 제공
+- 관련이 있는 곳에 **성능 고려사항** 포함
 
-## 📞 Support
+## 📞 지원
 
-For documentation-related questions:
-- **Missing Information:** Open an issue describing what's missing
-- **Unclear Instructions:** Suggest specific improvements
-- **Errors in Examples:** Report with details about the error
-- **New Features:** Document new features following existing patterns
+문서 관련 질문:
+- **누락된 정보:** 누락된 내용을 설명하는 이슈 열기
+- **불명확한 지침:** 구체적인 개선사항 제안
+- **예제 오류:** 오류에 대한 세부 정보와 함께 보고
+- **새로운 기능:** 기존 패턴을 따라 새 기능 문서화
 
 ---
 
-**This documentation provides comprehensive coverage of the Kafka Streams Test project. Choose the appropriate document based on your needs and experience level.**
+**이 문서는 Kafka Streams 테스트 프로젝트의 포괄적인 범위를 제공합니다. 필요와 경험 수준에 따라 적절한 문서를 선택하세요.**

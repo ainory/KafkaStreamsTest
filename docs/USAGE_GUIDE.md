@@ -1,96 +1,96 @@
-# Kafka Streams Test - Usage Guide
+# Kafka Streams 테스트 - 사용 가이드
 
-## Overview
+## 개요
 
-This guide provides comprehensive instructions for setting up, configuring, and using the Kafka Streams Test project. The project demonstrates real-time processing of collectd monitoring data using Apache Kafka Streams with both DSL and Processor API approaches.
+이 가이드는 Kafka Streams 테스트 프로젝트의 설정, 구성 및 사용에 대한 포괄적인 지침을 제공합니다. 이 프로젝트는 DSL과 Processor API 두 가지 접근 방식을 사용하여 collectd 모니터링 데이터의 실시간 처리를 보여줍니다.
 
-## Table of Contents
+## 목차
 
-1. [Prerequisites](#prerequisites)
-2. [Installation & Setup](#installation--setup)
-3. [Configuration](#configuration)
-4. [Quick Start](#quick-start)
-5. [DSL-Based Processing](#dsl-based-processing)
-6. [Processor API Usage](#processor-api-usage)
-7. [Data Formats](#data-formats)
-8. [Examples](#examples)
-9. [Monitoring & Troubleshooting](#monitoring--troubleshooting)
-10. [Performance Tuning](#performance-tuning)
-
----
-
-## Prerequisites
-
-### System Requirements
-
-- **Java:** JDK 8 or higher
-- **Apache Kafka:** Version 1.0.0 or compatible
-- **Maven:** 3.6+ for building the project
-- **Memory:** Minimum 2GB RAM recommended
-
-### Required Dependencies
-
-The project uses the following key dependencies (managed via Maven):
-
-- `kafka-streams: 1.0.0` - Core streaming functionality
-- `kafka-clients: 1.0.0` - Kafka client libraries
-- `commons-lang3: 3.5` - String and utility operations
-- `commons-math3: 3.6.1` - Mathematical operations
-- `jackson-databind` - JSON serialization (transitive dependency)
+1. [전제 조건](#전제-조건)
+2. [설치 및 설정](#설치-및-설정)
+3. [설정](#설정)
+4. [빠른 시작](#빠른-시작)
+5. [DSL 기반 처리](#dsl-기반-처리)
+6. [Processor API 사용](#processor-api-사용)
+7. [데이터 형식](#데이터-형식)
+8. [예제](#예제)
+9. [모니터링 및 문제 해결](#모니터링-및-문제-해결)
+10. [성능 튜닝](#성능-튜닝)
 
 ---
 
-## Installation & Setup
+## 전제 조건
 
-### 1. Clone and Build
+### 시스템 요구사항
+
+- **Java:** JDK 8 이상
+- **Apache Kafka:** 버전 1.0.0 이상 호환
+- **Maven:** 3.6+ (프로젝트 빌드용)
+- **메모리:** 최소 2GB RAM 권장
+
+### 필수 종속성
+
+프로젝트는 다음 주요 종속성을 사용합니다 (Maven을 통해 관리):
+
+- `kafka-streams: 1.0.0` - 핵심 스트리밍 기능
+- `kafka-clients: 1.0.0` - Kafka 클라이언트 라이브러리
+- `commons-lang3: 3.5` - 문자열 및 유틸리티 연산
+- `commons-math3: 3.6.1` - 수학적 연산
+- `jackson-databind` - JSON 직렬화 (전이 종속성)
+
+---
+
+## 설치 및 설정
+
+### 1. 클론 및 빌드
 
 ```bash
-# Clone the repository
+# 저장소 클론
 git clone <repository-url>
 cd KafkaStreamsTest
 
-# Build the project
+# 프로젝트 빌드
 mvn clean compile
 
-# Create executable JAR with dependencies
+# 종속성이 포함된 실행 가능한 JAR 생성
 mvn package
 ```
 
-This creates:
-- `target/KafkaStreamsTest.jar` - Main application JAR
-- `target/KafkaStreamsTest-jar-with-dependencies.jar` - Standalone executable
-- `target/libs/` - Dependencies directory
+다음이 생성됩니다:
+- `target/KafkaStreamsTest.jar` - 메인 애플리케이션 JAR
+- `target/KafkaStreamsTest-jar-with-dependencies.jar` - 독립 실행형 실행 파일
+- `target/libs/` - 종속성 디렉토리
 
-### 2. Kafka Setup
+### 2. Kafka 설정
 
-#### Start Kafka Services
+#### Kafka 서비스 시작
 
 ```bash
-# Start Zookeeper
+# Zookeeper 시작
 bin/zookeeper-server-start.sh config/zookeeper.properties
 
-# Start Kafka broker
+# Kafka 브로커 시작
 bin/kafka-server-start.sh config/server.properties
 ```
 
-#### Create Required Topics
+#### 필수 토픽 생성
 
 ```bash
-# Input topic for collectd data
+# collectd 데이터용 입력 토픽
 bin/kafka-topics.sh --create \
   --topic COLLECTD_DATA \
   --bootstrap-server localhost:9092 \
   --partitions 3 \
   --replication-factor 1
 
-# Output topic for DSL results
+# DSL 결과용 출력 토픽
 bin/kafka-topics.sh --create \
   --topic COLLECTD_DATA_TUMBLING_WINDOW \
   --bootstrap-server localhost:9092 \
   --partitions 3 \
   --replication-factor 1
 
-# Output topic for Processor API results
+# Processor API 결과용 출력 토픽
 bin/kafka-topics.sh --create \
   --topic ainory_kafka_summary \
   --bootstrap-server localhost:9092 \
@@ -98,223 +98,187 @@ bin/kafka-topics.sh --create \
   --replication-factor 1
 ```
 
-### 3. Verify Setup
+#### 토픽 확인
 
 ```bash
-# List topics
+# 생성된 토픽 나열
 bin/kafka-topics.sh --list --bootstrap-server localhost:9092
 
-# Test producer
-bin/kafka-console-producer.sh --topic COLLECTD_DATA --bootstrap-server localhost:9092
-
-# Test consumer
-bin/kafka-console-consumer.sh --topic COLLECTD_DATA --bootstrap-server localhost:9092 --from-beginning
+# 토픽 세부 정보 확인
+bin/kafka-topics.sh --describe --topic COLLECTD_DATA --bootstrap-server localhost:9092
 ```
 
 ---
 
-## Configuration
+## 설정
 
-### Application Configuration
-
-#### Kafka Streams Properties
-
-Create a `streams.properties` file:
-
-```properties
-# Application identity
-application.id=kafka-streams-collectd-processor
-bootstrap.servers=localhost:9092
-
-# Processing guarantees
-processing.guarantee=at_least_once
-num.stream.threads=2
-
-# Offset management
-auto.offset.reset=latest
-enable.auto.commit=true
-
-# Memory and performance
-cache.max.bytes.buffering=0
-max.poll.records=1000
-```
-
-#### Server Configuration
-
-Update broker addresses in source code or via environment variables:
+### 기본 Kafka Streams 설정
 
 ```java
-// In DslTestMain.java and ProcessorApiTestMain.java
-String KAFKA_BROKERS = System.getenv("KAFKA_BROKERS") != null ? 
-    System.getenv("KAFKA_BROKERS") : 
-    "spanal-app:9092,spanal-1:9092,spanal-2:9092,spanal-3:9092";
+Properties props = new Properties();
 
-props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKERS);
+// 필수 속성
+props.put(StreamsConfig.APPLICATION_ID_CONFIG, "kafka-streams-collectd-processor");
+props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
+props.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
+
+// 성능 튜닝
+props.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, 2);
+props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
+props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 1000);
+
+// 오류 처리
+props.put(ConsumerConfig.AUTO_OFFSET_RESET_CONFIG, "latest");
 ```
 
-### Environment Variables
+### 고급 설정 옵션
 
-```bash
-export KAFKA_BROKERS="localhost:9092"
-export APP_ID="collectd-processor"
-export WINDOW_SIZE_SECONDS="60"
+#### 타임스탬프 추출
+
+```java
+props.put(StreamsConfig.DEFAULT_TIMESTAMP_EXTRACTOR_CLASS_CONFIG, 
+    CollectdTimestampExtractor.class);
+```
+
+#### 상태 저장소 설정
+
+```java
+props.put(StreamsConfig.STATE_DIR_CONFIG, "/tmp/kafka-streams");
+props.put(StreamsConfig.REPLICATION_FACTOR_CONFIG, 1);
+```
+
+#### 처리 보장
+
+```java
+// 적어도 한 번 처리
+props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.AT_LEAST_ONCE);
+
+// 정확히 한 번 처리 (성능 트레이드오프 있음)
+props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE);
 ```
 
 ---
 
-## Quick Start
+## 빠른 시작
 
-### 1. Run DSL Processing
+### 1. 애플리케이션 실행
+
+#### DSL 기반 처리
 
 ```bash
-# Execute DSL-based stream processing
 java -cp target/KafkaStreamsTest-jar-with-dependencies.jar \
   com.ainory.kafka.streams.DslTestMain
-
-# Or using Maven
-mvn exec:java -Dexec.mainClass="com.ainory.kafka.streams.DslTestMain"
 ```
 
-### 2. Run Processor API
+#### Processor API 처리
 
 ```bash
-# Execute Processor API-based processing
 java -cp target/KafkaStreamsTest-jar-with-dependencies.jar \
   com.ainory.kafka.streams.ProcessorApiTestMain
 ```
 
-### 3. Send Test Data
+### 2. 테스트 데이터 전송
 
 ```bash
-# Send sample collectd data
-echo '[{"values":[45.2],"dstypes":["gauge"],"dsnames":["value"],"time":"1522299234.188","interval":10.0,"host":"test-server","plugin":"cpu","plugin_instance":"0","type":"cpu","type_instance":"idle","meta":{"network:received":true}}]' | \
+# 샘플 CPU 메트릭
+echo '[{"values":[45.2],"dstypes":["gauge"],"dsnames":["value"],"time":"1522299234.188","interval":10.0,"host":"test-server","plugin":"cpu","plugin_instance":"0","type":"cpu","type_instance":"user","meta":{}}]' | \
   bin/kafka-console-producer.sh --topic COLLECTD_DATA --bootstrap-server localhost:9092
 ```
 
-### 4. Monitor Output
+### 3. 결과 모니터링
 
 ```bash
-# Monitor DSL output
-bin/kafka-console-consumer.sh \
-  --topic COLLECTD_DATA_TUMBLING_WINDOW \
-  --bootstrap-server localhost:9092 \
-  --from-beginning
+# DSL 출력 확인
+bin/kafka-console-consumer.sh --topic COLLECTD_DATA_TUMBLING_WINDOW \
+  --bootstrap-server localhost:9092 --from-beginning
 
-# Monitor Processor API output
-bin/kafka-console-consumer.sh \
-  --topic ainory_kafka_summary \
-  --bootstrap-server localhost:9092 \
-  --from-beginning
+# Processor API 출력 확인
+bin/kafka-console-consumer.sh --topic ainory_kafka_summary \
+  --bootstrap-server localhost:9092 --from-beginning
 ```
 
 ---
 
-## DSL-Based Processing
+## DSL 기반 처리
 
-### Overview
+### 개요
 
-The DSL approach provides high-level abstractions for stream processing with automatic windowing and aggregation.
+DSL(Domain Specific Language) API는 함수형 프로그래밍 스타일을 사용하여 스트림 처리를 위한 고수준 추상화를 제공합니다.
 
-### Key Features
+### 주요 구성 요소
 
-- **Tumbling Windows:** 60-second non-overlapping time windows
-- **Automatic Aggregation:** Min, max, average, and sum calculations
-- **Type Safety:** Strongly typed operations with custom serdes
-- **Fault Tolerance:** Built-in error handling and recovery
+1. **KStream:** 무한한 레코드 스트림
+2. **KTable:** 변경 로그 스트림 (업데이트 가능)
+3. **윈도우:** 시간 기반 집계
+4. **집계:** 그룹화된 데이터에 대한 계산
 
-### Implementation Example
-
-```java
-public class CustomDslProcessor {
-    public static void main(String[] args) {
-        Properties props = new Properties();
-        props.put(StreamsConfig.APPLICATION_ID_CONFIG, "custom-dsl-processor");
-        props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092");
-        
-        StreamsBuilder builder = new StreamsBuilder();
-        
-        // Input stream
-        KStream<String, String> input = builder.stream("COLLECTD_DATA");
-        
-        // Transform and aggregate
-        KStream<String, DslHostMetricVO> processed = input
-            .map(new DslKeyValueMapper())
-            .filter((key, value) -> value != null);
-            
-        KTable<Windowed<String>, DslHostMetricVO> aggregated = processed
-            .groupByKey()
-            .windowedBy(TimeWindows.of(Duration.ofSeconds(60)))
-            .aggregate(
-                DslHostMetricVO::new,
-                (key, value, aggregate) -> {
-                    // Aggregation logic
-                    aggregate.setValue(aggregate.getValue().add(value.getValue()));
-                    aggregate.setAggregationCount(aggregate.getAggregationCount() + 1);
-                    return aggregate;
-                },
-                Materialized.with(Serdes.String(), CustomSerdes.DslHostMetricVO())
-            );
-            
-        // Output stream
-        aggregated.toStream().to("output-topic");
-        
-        // Start processing
-        KafkaStreams streams = new KafkaStreams(builder.build(), props);
-        streams.start();
-        
-        // Graceful shutdown
-        Runtime.getRuntime().addShutdownHook(new Thread(streams::close));
-    }
-}
-```
-
-### Window Operations
-
-#### Tumbling Windows
+### 구현 패턴
 
 ```java
-TimeWindows tumblingWindow = TimeWindows.of(Duration.ofSeconds(60));
+StreamsBuilder builder = new StreamsBuilder();
+
+// 입력 스트림 정의
+KStream<String, String> source = builder.stream("COLLECTD_DATA");
+
+// 데이터 변환 및 키 변경
+KStream<String, DslHostMetricVO> mappedStream = source
+    .map(new DslKeyValueMapper())
+    .filter((key, value) -> value != null);
+
+// 윈도우 집계
+KTable<Windowed<String>, DslHostMetricVO> windowedTable = mappedStream
+    .groupByKey()
+    .windowedBy(TimeWindows.of(Duration.ofSeconds(60)))
+    .aggregate(
+        () -> new DslHostMetricVO(),           // 초기화자
+        (key, value, aggregate) -> {           // 집계자
+            // 집계 로직 구현
+            return updateAggregate(aggregate, value);
+        },
+        Materialized.with(Serdes.String(), CustomSerdes.DslHostMetricVO())
+    );
+
+// 결과를 출력 토픽으로 전송
+windowedTable.toStream()
+    .map((windowedKey, value) -> new KeyValue<>(windowedKey.key(), value))
+    .to("COLLECTD_DATA_TUMBLING_WINDOW", 
+        Produced.with(Serdes.String(), CustomSerdes.DslHostMetricVO()));
 ```
 
-- **Use Case:** Non-overlapping periodic summaries
-- **Example:** Hourly CPU utilization reports
+### 윈도우 유형
 
-#### Hopping Windows
-
+#### 텀블링 윈도우
 ```java
-TimeWindows hoppingWindow = TimeWindows
-    .of(Duration.ofSeconds(60))
-    .advanceBy(Duration.ofSeconds(30));
+TimeWindows.of(Duration.ofSeconds(60))
 ```
+- **목적:** 겹치지 않는 시간 기반 집계
+- **사용 사례:** 주기적 요약 통계
 
-- **Use Case:** Overlapping analysis for smoother trends
-- **Example:** Moving averages with 30-second shifts
-
-#### Session Windows
-
+#### 호핑 윈도우
 ```java
-SessionWindows sessionWindow = SessionWindows.with(Duration.ofMinutes(5));
+TimeWindows.of(Duration.ofSeconds(60))
+    .advanceBy(Duration.ofSeconds(30))
 ```
-
-- **Use Case:** Activity-based grouping
-- **Example:** User session analysis
+- **목적:** 겹치는 시간 기반 집계
+- **사용 사례:** 사용자 세션 분석
 
 ---
 
-## Processor API Usage
+## Processor API 사용
 
-### Overview
+### 개요
 
-The Processor API provides low-level control over stream processing with custom business logic.
+Processor API는 커스텀 비즈니스 로직으로 스트림 처리에 대한 저수준 제어를 제공합니다.
 
-### Key Components
+### 주요 구성 요소
 
-1. **Processor:** Custom processing logic implementation
-2. **State Store:** Local storage for aggregation state
-3. **Punctuator:** Scheduled processing tasks
-4. **Topology:** Stream processing graph definition
+1. **Processor:** 커스텀 처리 로직 구현
+2. **상태 저장소:** 집계 상태를 위한 로컬 저장소
+3. **Punctuator:** 예약된 처리 작업
+4. **토폴로지:** 스트림 처리 그래프 정의
 
-### Implementation Pattern
+### 구현 패턴
 
 ```java
 public class CustomProcessor extends AbstractProcessor<String, String> {
@@ -326,7 +290,7 @@ public class CustomProcessor extends AbstractProcessor<String, String> {
         this.context = context;
         this.store = (KeyValueStore) context.getStateStore("metrics-store");
         
-        // Schedule periodic output
+        // 주기적 출력 스케줄링
         context.schedule(Duration.ofSeconds(60), PunctuationType.WALL_CLOCK_TIME, 
             this::punctuate);
     }
@@ -334,22 +298,22 @@ public class CustomProcessor extends AbstractProcessor<String, String> {
     @Override
     public void process(String key, String value) {
         try {
-            // Parse input data
+            // 입력 데이터 파싱
             CollectdKafkaVO[] data = JsonUtil.jsonStringToObject(value, CollectdKafkaVO[].class);
             
-            // Process and store
+            // 처리 및 저장
             HostMetricVO metric = store.get(key);
             if (metric == null) {
                 metric = new HostMetricVO();
                 metric.setHostname(key);
             }
             
-            // Update metrics
+            // 메트릭 업데이트
             updateMetrics(metric, data[0]);
             store.put(key, metric);
             
         } catch (Exception e) {
-            // Error handling
+            // 오류 처리
             context.forward(key, "ERROR: " + e.getMessage());
         }
     }
@@ -359,7 +323,7 @@ public class CustomProcessor extends AbstractProcessor<String, String> {
             while (iter.hasNext()) {
                 KeyValue<String, HostMetricVO> entry = iter.next();
                 
-                // Output aggregated results
+                // 집계된 결과 출력
                 String output = JsonUtil.objectToJsonString(entry.value);
                 context.forward(entry.key, output);
             }
@@ -368,13 +332,13 @@ public class CustomProcessor extends AbstractProcessor<String, String> {
 }
 ```
 
-### State Store Configuration
+### 상태 저장소 설정
 
 ```java
-// In topology setup
+// 토폴로지 설정에서
 StoreBuilder<KeyValueStore<String, HostMetricVO>> storeBuilder = 
     Stores.keyValueStoreBuilder(
-        Stores.persistentKeyValueStore("metrics-store"),  // or inMemoryKeyValueStore
+        Stores.persistentKeyValueStore("metrics-store"),  // 또는 inMemoryKeyValueStore
         Serdes.String(),
         CustomSerdes.HostMetricVO()
     );
@@ -384,11 +348,11 @@ topology.addStateStore(storeBuilder, "PROCESSOR_NAME");
 
 ---
 
-## Data Formats
+## 데이터 형식
 
-### Input Format (CollectdKafkaVO)
+### 입력 형식 (CollectdKafkaVO)
 
-Collectd JSON structure as received from Kafka:
+Kafka에서 수신한 Collectd JSON 구조:
 
 ```json
 [{
@@ -406,9 +370,9 @@ Collectd JSON structure as received from Kafka:
 }]
 ```
 
-### Output Formats
+### 출력 형식
 
-#### DSL Output (DslHostMetricVO)
+#### DSL 출력 (DslHostMetricVO)
 
 ```json
 {
@@ -424,7 +388,7 @@ Collectd JSON structure as received from Kafka:
 }
 ```
 
-#### Processor API Output (HostMetricVO)
+#### Processor API 출력 (HostMetricVO)
 
 ```json
 {
@@ -444,18 +408,18 @@ Collectd JSON structure as received from Kafka:
 
 ---
 
-## Examples
+## 예제
 
-### Example 1: Basic CPU Monitoring
+### 예제 1: 기본 CPU 모니터링
 
-#### Input Data
+#### 입력 데이터
 ```bash
-# CPU usage data
+# CPU 사용량 데이터
 echo '[{"values":[45.2],"dstypes":["gauge"],"dsnames":["value"],"time":"1522299234.188","interval":10.0,"host":"server-01","plugin":"cpu","plugin_instance":"0","type":"cpu","type_instance":"user","meta":{}}]' | \
   bin/kafka-console-producer.sh --topic COLLECTD_DATA --bootstrap-server localhost:9092
 ```
 
-#### Expected Output
+#### 예상 출력
 ```json
 {
   "hostname": "server-01",
@@ -467,42 +431,42 @@ echo '[{"values":[45.2],"dstypes":["gauge"],"dsnames":["value"],"time":"15222992
 }
 ```
 
-### Example 2: Memory Monitoring
+### 예제 2: 메모리 모니터링
 
-#### Input Data
+#### 입력 데이터
 ```bash
-# Memory usage data
+# 메모리 사용량 데이터
 echo '[{"values":[8589934592],"dstypes":["gauge"],"dsnames":["value"],"time":"1522299234.188","interval":10.0,"host":"server-01","plugin":"memory","plugin_instance":"","type":"memory","type_instance":"used","meta":{}}]' | \
   bin/kafka-console-producer.sh --topic COLLECTD_DATA --bootstrap-server localhost:9092
 ```
 
-### Example 3: Disk I/O Monitoring
+### 예제 3: 디스크 I/O 모니터링
 
-#### Input Data
+#### 입력 데이터
 ```bash
-# Disk operations
+# 디스크 작업
 echo '[{"values":[1250],"dstypes":["counter"],"dsnames":["value"],"time":"1522299234.188","interval":10.0,"host":"server-01","plugin":"disk","plugin_instance":"sda","type":"disk_ops","type_instance":"read","meta":{}}]' | \
   bin/kafka-console-producer.sh --topic COLLECTD_DATA --bootstrap-server localhost:9092
 ```
 
-### Example 4: Multi-value Load Average
+### 예제 4: 다중 값 로드 평균
 
-#### Input Data
+#### 입력 데이터
 ```bash
-# Load average (short, mid, long term)
+# 로드 평균 (단기, 중기, 장기)
 echo '[{"values":[2.07,2.07,2.04],"dstypes":["gauge","gauge","gauge"],"dsnames":["shortterm","midterm","longterm"],"time":"1522299234.188","interval":60.0,"host":"server-01","plugin":"load","plugin_instance":"","type":"load","type_instance":"","meta":{}}]' | \
   bin/kafka-console-producer.sh --topic COLLECTD_DATA --bootstrap-server localhost:9092
 ```
 
 ---
 
-## Monitoring & Troubleshooting
+## 모니터링 및 문제 해결
 
-### Application Monitoring
+### 애플리케이션 모니터링
 
-#### JMX Metrics
+#### JMX 메트릭
 
-Enable JMX for monitoring:
+모니터링을 위한 JMX 활성화:
 
 ```bash
 export JMX_OPTS="-Dcom.sun.management.jmxremote \
@@ -514,7 +478,7 @@ java $JMX_OPTS -cp target/KafkaStreamsTest-jar-with-dependencies.jar \
   com.ainory.kafka.streams.DslTestMain
 ```
 
-#### Log Configuration
+#### 로그 설정
 
 ```xml
 <!-- logback.xml -->
@@ -534,67 +498,67 @@ java $JMX_OPTS -cp target/KafkaStreamsTest-jar-with-dependencies.jar \
 </configuration>
 ```
 
-### Common Issues
+### 일반적인 문제
 
-#### 1. Topic Not Found
+#### 1. 토픽을 찾을 수 없음
 
 ```
 Error: Topic 'COLLECTD_DATA' not found
 ```
 
-**Solution:**
+**해결책:**
 ```bash
 bin/kafka-topics.sh --create --topic COLLECTD_DATA --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
 ```
 
-#### 2. Serialization Errors
+#### 2. 직렬화 오류
 
 ```
 Error: Cannot deserialize value
 ```
 
-**Solution:** Verify JSON format and custom serde configuration:
+**해결책:** JSON 형식 및 커스텀 serde 설정 확인:
 ```java
-// Ensure proper serde configuration
+// 적절한 serde 설정 확인
 props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 ```
 
-#### 3. Window Processing Delays
+#### 3. 윈도우 처리 지연
 
 ```
 Warning: Processing lag detected
 ```
 
-**Solution:** Tune window size and buffering:
+**해결책:** 윈도우 크기 및 버퍼링 튜닝:
 ```java
 props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
 props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 1000);
 ```
 
-#### 4. Memory Issues
+#### 4. 메모리 문제
 
 ```
 Error: OutOfMemoryError
 ```
 
-**Solution:** Increase heap size:
+**해결책:** 힙 크기 증가:
 ```bash
 export JAVA_OPTS="-Xmx2g -Xms1g"
 ```
 
-### Debugging Tips
+### 디버깅 팁
 
-1. **Enable Debug Logging:** Set log levels to DEBUG for detailed processing information
-2. **Monitor Consumer Lag:** Check offset lag using Kafka tools
-3. **Verify Data Format:** Use console consumers to inspect message formats
-4. **Check State Stores:** Monitor state store sizes and contents
-5. **Network Connectivity:** Verify broker connectivity and DNS resolution
+1. **디버그 로깅 활성화:** 상세한 처리 정보를 위해 로그 레벨을 DEBUG로 설정
+2. **컨슈머 지연 모니터링:** Kafka 도구를 사용하여 오프셋 지연 확인
+3. **데이터 형식 확인:** 콘솔 컨슈머를 사용하여 메시지 형식 검사
+4. **상태 저장소 확인:** 상태 저장소 크기 및 내용 모니터링
+5. **네트워크 연결:** 브로커 연결 및 DNS 해석 확인
 
 ---
 
-## Performance Tuning
+## 성능 튜닝
 
-### JVM Tuning
+### JVM 튜닝
 
 ```bash
 export JAVA_OPTS="-Xmx4g -Xms2g \
@@ -603,34 +567,34 @@ export JAVA_OPTS="-Xmx4g -Xms2g \
   -XX:+UseStringDeduplication"
 ```
 
-### Kafka Streams Configuration
+### Kafka Streams 설정
 
 ```java
 Properties props = new Properties();
 
-// Parallelism
+// 병렬성
 props.put(StreamsConfig.NUM_STREAM_THREADS_CONFIG, 4);
 
-// Buffering
+// 버퍼링
 props.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 100 * 1024 * 1024); // 100MB
 
-// Commit frequency
+// 커밋 빈도
 props.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 5000);
 
-// Processing guarantee
+// 처리 보장
 props.put(StreamsConfig.PROCESSING_GUARANTEE_CONFIG, StreamsConfig.EXACTLY_ONCE);
 ```
 
-### Topic Configuration
+### 토픽 설정
 
 ```bash
-# Increase partitions for parallelism
+# 병렬성을 위한 파티션 수 증가
 bin/kafka-topics.sh --alter \
   --topic COLLECTD_DATA \
   --partitions 12 \
   --bootstrap-server localhost:9092
 
-# Configure retention
+# 보존 설정
 bin/kafka-configs.sh --alter \
   --entity-type topics \
   --entity-name COLLECTD_DATA \
@@ -638,25 +602,25 @@ bin/kafka-configs.sh --alter \
   --bootstrap-server localhost:9092
 ```
 
-### Monitoring Performance
+### 성능 모니터링
 
-#### Key Metrics to Monitor
+#### 모니터링해야 할 주요 메트릭
 
-1. **Processing Rate:** Records processed per second
-2. **Latency:** End-to-end processing latency
-3. **Memory Usage:** Heap and off-heap memory consumption
-4. **Network I/O:** Bandwidth utilization
-5. **State Store Size:** Local storage consumption
+1. **처리율:** 초당 처리된 레코드 수
+2. **지연시간:** 종단간 처리 지연시간
+3. **메모리 사용량:** 힙 및 오프힙 메모리 소비
+4. **네트워크 I/O:** 대역폭 사용률
+5. **상태 저장소 크기:** 로컬 저장소 소비
 
-#### Performance Benchmarks
+#### 성능 벤치마크
 
-Typical performance characteristics:
+일반적인 성능 특성:
 
-- **Throughput:** 10,000-50,000 records/second (depending on complexity)
-- **Latency:** 50-200ms end-to-end
-- **Memory:** 1-4GB heap recommended
-- **Storage:** 100MB-1GB for state stores
+- **처리량:** 10,000-50,000 레코드/초 (복잡도에 따라)
+- **지연시간:** 50-200ms 종단간
+- **메모리:** 1-4GB 힙 권장
+- **저장소:** 상태 저장소용 100MB-1GB
 
 ---
 
-This comprehensive usage guide provides all the necessary information to successfully deploy and operate the Kafka Streams Test project. For additional support, refer to the API documentation and source code comments.
+이 포괄적인 사용 가이드는 Kafka Streams 테스트 프로젝트를 성공적으로 배포하고 운영하는 데 필요한 모든 정보를 제공합니다. 추가 지원이 필요하면 API 문서 및 소스 코드 주석을 참조하세요.
