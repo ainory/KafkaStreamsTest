@@ -1,223 +1,223 @@
-# Kafka Streams Test
+# Kafka Streams 테스트
 
-A comprehensive demonstration project for real-time stream processing of collectd monitoring data using Apache Kafka Streams. This project showcases both DSL (Domain Specific Language) and Processor API approaches for building scalable data processing pipelines.
+Apache Kafka Streams를 사용한 collectd 모니터링 데이터의 실시간 스트림 처리를 종합적으로 보여주는 프로젝트입니다. 이 프로젝트는 확장 가능한 데이터 처리 파이프라인 구축을 위한 DSL(Domain Specific Language)과 Processor API 두 가지 접근 방식을 모두 제시합니다.
 
-## 🎯 Overview
+## 🎯 개요
 
-The Kafka Streams Test project processes collectd monitoring data in real-time, performing aggregations and calculations across time windows. It demonstrates:
+Kafka Streams 테스트 프로젝트는 collectd 모니터링 데이터를 실시간으로 처리하며, 시간 윈도우를 통한 집계 및 계산을 수행합니다. 다음과 같은 내용을 보여줍니다:
 
-- **Real-time Data Processing:** Stream processing of monitoring metrics (CPU, memory, disk I/O)
-- **Windowed Aggregations:** Time-based grouping with tumbling and hopping windows
-- **Multiple Processing Patterns:** Both high-level DSL and low-level Processor API implementations
-- **Scalable Architecture:** Horizontally scalable stream processing with state management
+- **실시간 데이터 처리:** 모니터링 메트릭(CPU, 메모리, 디스크 I/O)의 스트림 처리
+- **윈도우 집계:** 텀블링 윈도우와 호핑 윈도우를 통한 시간 기반 그룹화
+- **다양한 처리 패턴:** 고수준 DSL과 저수준 Processor API 구현
+- **확장 가능한 아키텍처:** 상태 관리가 포함된 수평 확장 가능한 스트림 처리
 
-## 📋 Table of Contents
+## 📋 목차
 
-- [Architecture](#-architecture)
-- [Features](#-features)
-- [Quick Start](#-quick-start)
-- [Documentation](#-documentation)
-- [Project Structure](#-project-structure)
-- [Configuration](#-configuration)
-- [Examples](#-examples)
-- [Performance](#-performance)
-- [Contributing](#-contributing)
-- [License](#-license)
+- [아키텍처](#-아키텍처)
+- [기능](#-기능)
+- [빠른 시작](#-빠른-시작)
+- [문서](#-문서)
+- [프로젝트 구조](#-프로젝트-구조)
+- [설정](#-설정)
+- [예제](#-예제)
+- [성능](#-성능)
+- [기여하기](#-기여하기)
+- [라이선스](#-라이선스)
 
-## 🏗 Architecture
+## 🏗 아키텍처
 
-### Data Flow
+### 데이터 흐름
 
 ```
-collectd → Kafka Topic → Kafka Streams → Aggregated Results → Output Topic
+collectd → Kafka Topic → Kafka Streams → 집계 결과 → 출력 Topic
 ```
 
-**Detailed Flow:**
-1. **collectd** collects system metrics (10-second intervals)
-2. **Kafka Plugin** sends JSON data to `COLLECTD_DATA` topic
-3. **Kafka Streams** processes data with 60-second aggregation windows
-4. **Results** are output to destination topics with min/max/avg/sum calculations
+**상세 흐름:**
+1. **collectd**가 시스템 메트릭을 수집 (10초 간격)
+2. **Kafka 플러그인**이 JSON 데이터를 `COLLECTD_DATA` 토픽으로 전송
+3. **Kafka Streams**가 60초 집계 윈도우로 데이터 처리
+4. **결과**가 최솟값/최댓값/평균/합계 계산과 함께 대상 토픽으로 출력
 
-### Processing Approaches
+### 처리 방식
 
 #### DSL (Domain Specific Language)
-- High-level functional programming style
-- Automatic windowing and aggregation
-- Type-safe operations with custom serdes
-- Built-in fault tolerance
+- 고수준 함수형 프로그래밍 스타일
+- 자동 윈도우잉 및 집계
+- 커스텀 serdes를 통한 타입 안전 연산
+- 내장 장애 허용성
 
 #### Processor API
-- Low-level control over processing logic
-- Custom state management
-- Flexible scheduling and punctuation
-- Fine-grained error handling
+- 처리 로직에 대한 저수준 제어
+- 커스텀 상태 관리
+- 유연한 스케줄링 및 펑처에이션
+- 세밀한 오류 처리
 
-## ✨ Features
+## ✨ 기능
 
-### Core Capabilities
+### 핵심 기능
 
-- **📊 Real-time Monitoring:** Process collectd metrics as they arrive
-- **⏱️ Windowed Aggregations:** 60-second tumbling windows for periodic summaries
-- **📈 Statistical Operations:** Min, max, average, and sum calculations
-- **🔄 Multiple APIs:** Both DSL and Processor API implementations
-- **💾 State Management:** Persistent and in-memory state stores
-- **⚡ High Performance:** Optimized for throughput and low latency
+- **📊 실시간 모니터링:** 도착하는 collectd 메트릭을 실시간으로 처리
+- **⏱️ 윈도우 집계:** 주기적 요약을 위한 60초 텀블링 윈도우
+- **📈 통계 연산:** 최솟값, 최댓값, 평균, 합계 계산
+- **🔄 다중 API:** DSL과 Processor API 구현 모두 제공
+- **💾 상태 관리:** 영구 및 인메모리 상태 저장소
+- **⚡ 고성능:** 처리량과 저지연시간에 최적화
 
-### Supported Metrics
+### 지원 메트릭
 
-- **CPU Usage:** Per-core and aggregate CPU utilization
-- **Memory Statistics:** Memory usage patterns and trends
-- **Disk I/O:** Read/write operations and throughput
-- **Load Average:** System load metrics (1min, 5min, 15min)
-- **Network Activity:** Interface statistics and bandwidth
+- **CPU 사용량:** 코어별 및 전체 CPU 사용률
+- **메모리 통계:** 메모리 사용 패턴 및 트렌드
+- **디스크 I/O:** 읽기/쓰기 작업 및 처리량
+- **로드 평균:** 시스템 로드 메트릭 (1분, 5분, 15분)
+- **네트워크 활동:** 인터페이스 통계 및 대역폭
 
-## 🚀 Quick Start
+## 🚀 빠른 시작
 
-### Prerequisites
+### 전제 조건
 
 - Java 8+ (JDK)
 - Apache Kafka 1.0.0+
 - Maven 3.6+
 
-### Installation
+### 설치
 
 ```bash
-# Clone the repository
+# 저장소 클론
 git clone <repository-url>
 cd KafkaStreamsTest
 
-# Build the project
+# 프로젝트 빌드
 mvn clean package
 
-# This creates:
+# 다음이 생성됩니다:
 # - target/KafkaStreamsTest.jar
 # - target/KafkaStreamsTest-jar-with-dependencies.jar
 ```
 
-### Setup Kafka
+### Kafka 설정
 
 ```bash
-# Start services
+# 서비스 시작
 bin/zookeeper-server-start.sh config/zookeeper.properties
 bin/kafka-server-start.sh config/server.properties
 
-# Create topics
+# 토픽 생성
 bin/kafka-topics.sh --create --topic COLLECTD_DATA --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
 bin/kafka-topics.sh --create --topic COLLECTD_DATA_TUMBLING_WINDOW --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
 bin/kafka-topics.sh --create --topic ainory_kafka_summary --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
 ```
 
-### Run Applications
+### 애플리케이션 실행
 
-#### DSL-Based Processing
+#### DSL 기반 처리
 ```bash
 java -cp target/KafkaStreamsTest-jar-with-dependencies.jar com.ainory.kafka.streams.DslTestMain
 ```
 
-#### Processor API Processing
+#### Processor API 처리
 ```bash
 java -cp target/KafkaStreamsTest-jar-with-dependencies.jar com.ainory.kafka.streams.ProcessorApiTestMain
 ```
 
-### Send Test Data
+### 테스트 데이터 전송
 
 ```bash
-# Sample CPU metric
+# CPU 메트릭 예제
 echo '[{"values":[45.2],"dstypes":["gauge"],"dsnames":["value"],"time":"1522299234.188","interval":10.0,"host":"test-server","plugin":"cpu","plugin_instance":"0","type":"cpu","type_instance":"user","meta":{}}]' | \
   bin/kafka-console-producer.sh --topic COLLECTD_DATA --bootstrap-server localhost:9092
 ```
 
-### Monitor Results
+### 결과 모니터링
 
 ```bash
-# Watch DSL output
+# DSL 출력 확인
 bin/kafka-console-consumer.sh --topic COLLECTD_DATA_TUMBLING_WINDOW --bootstrap-server localhost:9092 --from-beginning
 
-# Watch Processor API output  
+# Processor API 출력 확인
 bin/kafka-console-consumer.sh --topic ainory_kafka_summary --bootstrap-server localhost:9092 --from-beginning
 ```
 
-## 📚 Documentation
+## 📚 문서
 
-### Complete Documentation Set
+### 완전한 문서 세트
 
-- **[API Documentation](docs/API_DOCUMENTATION.md)** - Comprehensive API reference with examples
-- **[Usage Guide](docs/USAGE_GUIDE.md)** - Detailed setup, configuration, and usage instructions
-- **[JavaDoc](target/site/apidocs/)** - Generated after running `mvn javadoc:javadoc`
+- **[API 문서](docs/API_DOCUMENTATION.md)** - 예제가 포함된 포괄적인 API 참조
+- **[사용 가이드](docs/USAGE_GUIDE.md)** - 상세한 설정, 구성 및 사용 지침
+- **[JavaDoc](target/site/apidocs/)** - `mvn javadoc:javadoc` 실행 후 생성
 
-### Key Components Documentation
+### 주요 컴포넌트 문서
 
-| Component | Purpose | Documentation |
+| 컴포넌트 | 목적 | 문서 |
 |-----------|---------|---------------|
-| `DslTestMain` | DSL-based stream processing | [API Docs](docs/API_DOCUMENTATION.md#dsltestmain) |
-| `ProcessorApiTestMain` | Processor API implementation | [API Docs](docs/API_DOCUMENTATION.md#processorapitestmain) |
-| `CollectdKafkaVO` | Input data structure | [API Docs](docs/API_DOCUMENTATION.md#collectdkafkavo) |
-| `HostMetricVO` | Aggregated output format | [API Docs](docs/API_DOCUMENTATION.md#hostmetricvo) |
-| `CustomSerdes` | Serialization utilities | [API Docs](docs/API_DOCUMENTATION.md#customserdes) |
-| `JsonUtil` | JSON processing utilities | [API Docs](docs/API_DOCUMENTATION.md#jsonutil) |
+| `DslTestMain` | DSL 기반 스트림 처리 | [API 문서](docs/API_DOCUMENTATION.md#dsltestmain) |
+| `ProcessorApiTestMain` | Processor API 구현 | [API 문서](docs/API_DOCUMENTATION.md#processorapitestmain) |
+| `CollectdKafkaVO` | 입력 데이터 구조 | [API 문서](docs/API_DOCUMENTATION.md#collectdkafkavo) |
+| `HostMetricVO` | 집계된 출력 형식 | [API 문서](docs/API_DOCUMENTATION.md#hostmetricvo) |
+| `CustomSerdes` | 직렬화 유틸리티 | [API 문서](docs/API_DOCUMENTATION.md#customserdes) |
+| `JsonUtil` | JSON 처리 유틸리티 | [API 문서](docs/API_DOCUMENTATION.md#jsonutil) |
 
-## 📁 Project Structure
+## 📁 프로젝트 구조
 
 ```
 KafkaStreamsTest/
 ├── src/main/java/com/ainory/kafka/streams/
-│   ├── DslTestMain.java                    # DSL-based main class
-│   ├── ProcessorApiTestMain.java           # Processor API main class
-│   ├── KafkaTest.java                      # Comprehensive test scenarios
-│   ├── entity/                             # Data transfer objects
-│   │   ├── CollectdKafkaVO.java           # Input data structure
-│   │   ├── HostMetricVO.java              # Processor API output
-│   │   └── DslHostMetricVO.java           # DSL output structure
-│   ├── serializer/                         # Custom serialization
-│   │   ├── CustomSerdes.java              # Serde factory
-│   │   ├── *Serializer.java               # Individual serializers
-│   │   └── *Deserializer.java             # Individual deserializers
-│   ├── process/                            # Stream processors
-│   │   ├── ProcessTest1.java              # Main processor logic
-│   │   └── ProcessorSupplierTest.java     # Processor factory
-│   ├── keyvalue/mapper/                    # Key-value transformations
-│   │   └── DslKeyValueMapper.java         # DSL key mapping
-│   ├── timestamp/extractor/                # Timestamp extraction
-│   │   └── CollectdTimestampExtractor.java # Custom timestamp logic
-│   └── util/                               # Utility classes
-│       └── JsonUtil.java                  # JSON processing
-├── docs/                                   # Documentation
-│   ├── API_DOCUMENTATION.md               # Complete API reference
-│   └── USAGE_GUIDE.md                     # Setup and usage guide
-├── pom.xml                                 # Maven configuration
-├── README.md                               # This file
-└── LICENSE                                 # License information
+│   ├── DslTestMain.java                    # DSL 기반 메인 클래스
+│   ├── ProcessorApiTestMain.java           # Processor API 메인 클래스
+│   ├── KafkaTest.java                      # 포괄적인 테스트 시나리오
+│   ├── entity/                             # 데이터 전송 객체
+│   │   ├── CollectdKafkaVO.java           # 입력 데이터 구조
+│   │   ├── HostMetricVO.java              # Processor API 출력
+│   │   └── DslHostMetricVO.java           # DSL 출력 구조
+│   ├── serializer/                         # 커스텀 직렬화
+│   │   ├── CustomSerdes.java              # Serde 팩토리
+│   │   ├── *Serializer.java               # 개별 직렬화기
+│   │   └── *Deserializer.java             # 개별 역직렬화기
+│   ├── process/                            # 스트림 프로세서
+│   │   ├── ProcessTest1.java              # 메인 프로세서 로직
+│   │   └── ProcessorSupplierTest.java     # 프로세서 팩토리
+│   ├── keyvalue/mapper/                    # 키-값 변환
+│   │   └── DslKeyValueMapper.java         # DSL 키 매핑
+│   ├── timestamp/extractor/                # 타임스탬프 추출
+│   │   └── CollectdTimestampExtractor.java # 커스텀 타임스탬프 로직
+│   └── util/                               # 유틸리티 클래스
+│       └── JsonUtil.java                  # JSON 처리
+├── docs/                                   # 문서
+│   ├── API_DOCUMENTATION.md               # 완전한 API 참조
+│   └── USAGE_GUIDE.md                     # 설정 및 사용 가이드
+├── pom.xml                                 # Maven 설정
+├── README.md                               # 이 파일
+└── LICENSE                                 # 라이선스 정보
 ```
 
-## ⚙️ Configuration
+## ⚙️ 설정
 
-### Kafka Streams Properties
+### Kafka Streams 속성
 
-**Key Configuration Options:**
+**주요 설정 옵션:**
 
 ```java
-// Application identity
+// 애플리케이션 식별
 application.id=kafka-streams-collectd-processor
 bootstrap.servers=localhost:9092
 
-// Processing configuration
+// 처리 설정
 processing.guarantee=at_least_once
 num.stream.threads=2
 
-// Window configuration
+// 윈도우 설정
 window.size.seconds=60
 cache.max.bytes.buffering=0
 ```
 
-### Topic Configuration
+### 토픽 설정
 
-| Topic | Purpose | Partitions | Retention |
+| 토픽 | 목적 | 파티션 | 보존 기간 |
 |-------|---------|------------|-----------|
-| `COLLECTD_DATA` | Input metrics from collectd | 3 | 24 hours |
-| `COLLECTD_DATA_TUMBLING_WINDOW` | DSL aggregated output | 3 | 7 days |
-| `ainory_kafka_summary` | Processor API output | 3 | 7 days |
+| `COLLECTD_DATA` | collectd의 입력 메트릭 | 3 | 24시간 |
+| `COLLECTD_DATA_TUMBLING_WINDOW` | DSL 집계 출력 | 3 | 7일 |
+| `ainory_kafka_summary` | Processor API 출력 | 3 | 7일 |
 
-### Environment Variables
+### 환경 변수
 
 ```bash
 export KAFKA_BROKERS="localhost:9092"
@@ -226,9 +226,9 @@ export WINDOW_SIZE_SECONDS="60"
 export JAVA_OPTS="-Xmx2g -Xms1g"
 ```
 
-## 💡 Examples
+## 💡 예제
 
-### Input Data Format (Collectd JSON)
+### 입력 데이터 형식 (Collectd JSON)
 
 ```json
 [{
@@ -246,9 +246,9 @@ export JAVA_OPTS="-Xmx2g -Xms1g"
 }]
 ```
 
-### Output Data Formats
+### 출력 데이터 형식
 
-#### DSL Output (DslHostMetricVO)
+#### DSL 출력 (DslHostMetricVO)
 ```json
 {
   "hostname": "web-server-01",
@@ -263,7 +263,7 @@ export JAVA_OPTS="-Xmx2g -Xms1g"
 }
 ```
 
-#### Processor API Output (HostMetricVO)
+#### Processor API 출력 (HostMetricVO)
 ```json
 {
   "hostname": "web-server-01",
@@ -278,173 +278,173 @@ export JAVA_OPTS="-Xmx2g -Xms1g"
 }
 ```
 
-### Use Case Examples
+### 사용 사례 예제
 
-#### 1. CPU Monitoring
+#### 1. CPU 모니터링
 ```bash
-# Monitor CPU usage across multiple cores
+# 여러 코어의 CPU 사용량 모니터링
 echo '[{"values":[45.2],"dstypes":["gauge"],"dsnames":["value"],"time":"1522299234.188","interval":10.0,"host":"server-01","plugin":"cpu","plugin_instance":"0","type":"cpu","type_instance":"user","meta":{}}]'
 ```
 
-#### 2. Memory Tracking
+#### 2. 메모리 추적
 ```bash
-# Track memory utilization
+# 메모리 사용률 추적
 echo '[{"values":[8589934592],"dstypes":["gauge"],"dsnames":["value"],"time":"1522299234.188","interval":10.0,"host":"server-01","plugin":"memory","plugin_instance":"","type":"memory","type_instance":"used","meta":{}}]'
 ```
 
-#### 3. Load Average Monitoring
+#### 3. 로드 평균 모니터링
 ```bash
-# Multi-value load average (1min, 5min, 15min)
+# 다중 값 로드 평균 (1분, 5분, 15분)
 echo '[{"values":[2.07,2.07,2.04],"dstypes":["gauge","gauge","gauge"],"dsnames":["shortterm","midterm","longterm"],"time":"1522299234.188","interval":60.0,"host":"server-01","plugin":"load","plugin_instance":"","type":"load","type_instance":"","meta":{}}]'
 ```
 
-## 📊 Performance
+## 📊 성능
 
-### Benchmarks
+### 벤치마크
 
-**Typical Performance Characteristics:**
+**일반적인 성능 특성:**
 
-- **Throughput:** 10,000-50,000 records/second
-- **Latency:** 50-200ms end-to-end
-- **Memory Usage:** 1-4GB heap recommended
-- **State Store:** 100MB-1GB typical size
+- **처리량:** 초당 10,000-50,000 레코드
+- **지연시간:** 50-200ms 종단간
+- **메모리 사용량:** 1-4GB 힙 권장
+- **상태 저장소:** 일반적으로 100MB-1GB 크기
 
-### Optimization Tips
+### 최적화 팁
 
-1. **Increase Parallelism:** Add more partitions and stream threads
-2. **Tune JVM:** Use G1GC for better pause times
-3. **Configure Buffering:** Adjust cache sizes for your workload
-4. **Monitor Lag:** Watch consumer lag and processing delays
+1. **병렬성 증가:** 더 많은 파티션 및 스트림 스레드 추가
+2. **JVM 튜닝:** 더 나은 일시 정지 시간을 위해 G1GC 사용
+3. **버퍼링 설정:** 워크로드에 맞게 캐시 크기 조정
+4. **지연 모니터링:** 컨슈머 지연 및 처리 지연 확인
 
 ```bash
-# Performance tuning example
+# 성능 튜닝 예제
 export JAVA_OPTS="-Xmx4g -Xms2g -XX:+UseG1GC -XX:MaxGCPauseMillis=100"
 java $JAVA_OPTS -cp target/KafkaStreamsTest-jar-with-dependencies.jar com.ainory.kafka.streams.DslTestMain
 ```
 
-## 🛠 Development
+## 🛠 개발
 
-### Building from Source
+### 소스에서 빌드
 
 ```bash
-# Clean build
+# 클린 빌드
 mvn clean compile
 
-# Run tests
+# 테스트 실행
 mvn test
 
-# Package with dependencies
+# 종속성과 함께 패키지
 mvn package
 
-# Generate documentation
+# 문서 생성
 mvn javadoc:javadoc
 ```
 
-### Running in Development
+### 개발 환경에서 실행
 
 ```bash
-# Run with Maven
+# Maven으로 실행
 mvn exec:java -Dexec.mainClass="com.ainory.kafka.streams.DslTestMain"
 
-# Debug mode
+# 디버그 모드
 mvn exec:java -Dexec.mainClass="com.ainory.kafka.streams.DslTestMain" -Dexec.args="-agentlib:jdwp=transport=dt_socket,server=y,suspend=n,address=5005"
 ```
 
-### Code Style
+### 코드 스타일
 
-- **Java 8+** features and patterns
-- **Functional programming** where appropriate
-- **Comprehensive error handling** with graceful degradation
-- **Detailed logging** for monitoring and debugging
+- **Java 8+** 기능 및 패턴
+- 적절한 곳에 **함수형 프로그래밍**
+- 점진적 저하를 통한 **포괄적인 오류 처리**
+- 모니터링 및 디버깅을 위한 **상세한 로깅**
 
-## 🔧 Troubleshooting
+## 🔧 문제 해결
 
-### Common Issues
+### 일반적인 문제
 
-#### Topic Not Found
+#### 토픽을 찾을 수 없음
 ```bash
-# Create missing topics
+# 누락된 토픽 생성
 bin/kafka-topics.sh --create --topic COLLECTD_DATA --bootstrap-server localhost:9092 --partitions 3 --replication-factor 1
 ```
 
-#### Serialization Errors
+#### 직렬화 오류
 ```java
-// Verify serde configuration
+// serde 설정 확인
 props.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, Serdes.String().getClass());
 ```
 
-#### Memory Issues
+#### 메모리 문제
 ```bash
-# Increase heap size
+# 힙 크기 증가
 export JAVA_OPTS="-Xmx4g -Xms2g"
 ```
 
-### Debugging
+### 디버깅
 
-1. **Enable debug logging** for detailed processing information
-2. **Monitor consumer lag** using Kafka tools
-3. **Verify data formats** with console consumers
-4. **Check state store sizes** and contents
-5. **Validate network connectivity** to Kafka brokers
+1. 상세한 처리 정보를 위한 **디버그 로깅 활성화**
+2. Kafka 도구를 사용한 **컨슈머 지연 모니터링**
+3. 콘솔 컨슈머로 **데이터 형식 확인**
+4. **상태 저장소 크기** 및 내용 확인
+5. Kafka 브로커에 대한 **네트워크 연결 검증**
 
-## 🤝 Contributing
+## 🤝 기여하기
 
-We welcome contributions! Please see our contributing guidelines:
+기여를 환영합니다! 기여 가이드라인을 참조해 주세요:
 
-1. **Fork** the repository
-2. **Create** a feature branch
-3. **Make** your changes with tests
-4. **Submit** a pull request
+1. 저장소를 **포크**합니다
+2. 기능 브랜치를 **생성**합니다
+3. 테스트와 함께 **변경사항을 작성**합니다
+4. **풀 리퀘스트를 제출**합니다
 
-### Development Setup
+### 개발 설정
 
 ```bash
 git clone <your-fork>
 cd KafkaStreamsTest
 mvn clean compile
-# Make your changes
+# 변경사항 작성
 mvn test
 ```
 
-## 📄 License
+## 📄 라이선스
 
-This project is licensed under the terms specified in the [LICENSE](LICENSE) file.
+이 프로젝트는 [LICENSE](LICENSE) 파일에 명시된 조건에 따라 라이선스가 부여됩니다.
 
-## 🆘 Support
+## 🆘 지원
 
-For questions and support:
+질문 및 지원을 위해:
 
-- **Documentation:** Check the [docs/](docs/) directory
-- **Issues:** Open a GitHub issue
-- **API Reference:** See [API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md)
-- **Setup Help:** See [USAGE_GUIDE.md](docs/USAGE_GUIDE.md)
+- **문서:** [docs/](docs/) 디렉토리 확인
+- **이슈:** GitHub 이슈 열기
+- **API 참조:** [API_DOCUMENTATION.md](docs/API_DOCUMENTATION.md) 참조
+- **설정 도움:** [USAGE_GUIDE.md](docs/USAGE_GUIDE.md) 참조
 
 ---
 
-## 📝 Version History
+## 📝 버전 히스토리
 
-### Current Version: 1.0-SNAPSHOT
+### 현재 버전: 1.0-SNAPSHOT
 
-**Technology Stack:**
+**기술 스택:**
 - Java 8+
 - Apache Kafka Streams 1.0.0
 - Apache Kafka Clients 1.0.0
 - Apache Commons Lang3 3.5
 - Apache Commons Math3 3.6.1
-- Jackson (for JSON processing)
+- Jackson (JSON 처리용)
 
-### Key Features Implemented:
-- ✅ DSL-based stream processing
-- ✅ Processor API implementation  
-- ✅ Windowed aggregations (tumbling windows)
-- ✅ Custom serialization/deserialization
-- ✅ Collectd data format support
-- ✅ Statistical calculations (min/max/avg/sum)
-- ✅ State store management
-- ✅ Error handling and recovery
-- ✅ Comprehensive documentation
+### 구현된 주요 기능:
+- ✅ DSL 기반 스트림 처리
+- ✅ Processor API 구현
+- ✅ 윈도우 집계 (텀블링 윈도우)
+- ✅ 커스텀 직렬화/역직렬화
+- ✅ Collectd 데이터 형식 지원
+- ✅ 통계 계산 (최솟값/최댓값/평균/합계)
+- ✅ 상태 저장소 관리
+- ✅ 오류 처리 및 복구
+- ✅ 포괄적인 문서
 
 ---
 
-**Ready to process real-time monitoring data at scale!** 🚀
+**대규모 실시간 모니터링 데이터 처리 준비 완료!** 🚀
 
